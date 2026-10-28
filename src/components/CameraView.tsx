@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "./CameraView.css";
 
 const PHOTO_COUNT = 4;
 const COUNTDOWN_SECONDS = 3;
@@ -170,49 +171,106 @@ export default function CameraView() {
     shootNext([]);
   }
 
-  return (
-    <div style={{ width: "100%", maxWidth: 720, margin: "0 auto" }}>
-      {framedPhoto ? (
-        <div>
-          <h1>📸 UP4cuts</h1>
-          <p>Korean Photo Booth 🇰🇷</p>
-          {error && <p role="alert" style={{ color: "#c62828" }}>{error}</p>}
-          <h2>Your 4-cut photo!</h2>
-          <img src={framedPhoto} alt="완성된 2×2 네컷 사진" style={{ display: "block", width: "100%", maxWidth: 480, margin: "0 auto", borderRadius: 8 }} />
-          <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 12, marginTop: 20 }}>
-            <button type="button" onClick={startCapture}>다시 촬영</button>
-            <a href={framedPhoto} download="UP4cuts.jpg" style={{ display: "inline-block", padding: "10px 18px", borderRadius: 8, background: "#202020", color: "white", textDecoration: "none" }}>사진 다운로드</a>
-          </div>
-        </div>
-      ) : null}
-      <div style={{ display: framedPhoto ? "none" : "block" }}>
+    return (
+    <main className="booth">
+      <header className="booth-header">
+        <p className="booth-subtitle">KOREAN PHOTO BOOTH</p>
         <h1>📸 UP4cuts</h1>
-        <p>Korean Photo Booth 🇰🇷</p>
-        {error && <p role="alert" style={{ color: "#c62828" }}>{error}</p>}
-        <div style={{ position: "relative" }}>
+        <p>Make your memories at UP Diliman!</p>
+      </header>
+
+      {error && (
+        <p className="booth-error" role="alert">
+          {error}
+        </p>
+      )}
+
+      {framedPhoto && (
+        <section className="booth-result">
+          <h2>Your 4-cut photo!</h2>
+
+          <img
+            className="booth-result-image"
+            src={framedPhoto}
+            alt="완성된 네컷 사진"
+          />
+
+          <div className="booth-actions">
+            <button
+              type="button"
+              className="booth-button booth-button-secondary"
+              onClick={startCapture}
+            >
+              Retake
+            </button>
+
+            <a
+              className="booth-button booth-button-primary"
+              href={framedPhoto}
+              download="UP4cuts.jpg"
+            >
+              Save Photo
+            </a>
+          </div>
+        </section>
+      )}
+
+      <section
+        className="booth-shoot"
+        style={{ display: framedPhoto ? "none" : undefined }}
+      >
+        <div className="booth-camera">
           <video
             ref={videoRef}
             autoPlay
             playsInline
             muted
-            style={{ width: "100%", borderRadius: 16, transform: "scaleX(-1)", background: "#111" }}
+            className="booth-video"
           />
+
           {countdown !== null && (
-            <span style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)", fontSize: 96, fontWeight: 700, color: "white", textShadow: "0 2px 12px black" }}>
+            <span className="booth-countdown">
               {countdown}
             </span>
           )}
         </div>
-        <p>{composing ? "네컷 사진 합성 중..." : photos.length === PHOTO_COUNT ? "촬영 완료!" : `${photos.length} / ${PHOTO_COUNT}장 촬영`}</p>
-        <button type="button" onClick={startCapture} disabled={!ready || shooting || composing}>
-          {shooting ? "촬영 중..." : composing ? "합성 중..." : photos.length === PHOTO_COUNT ? "다시 촬영" : "촬영 시작"}
+
+        <p className="booth-progress">
+          {composing
+            ? "Creating your photo..."
+            : shooting
+              ? `Taking photo ${photos.length + 1} / ${PHOTO_COUNT}`
+              : `${photos.length} / ${PHOTO_COUNT} photos`}
+        </p>
+
+        <button
+          type="button"
+          className="booth-button booth-button-primary booth-start"
+          onClick={startCapture}
+          disabled={!ready || shooting || composing}
+        >
+          {shooting
+            ? "Taking photos..."
+            : composing
+              ? "Creating photo..."
+              : "📸 Start Shooting"}
         </button>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12, marginTop: 20 }}>
-          {photos.map((photo, index) => (
-            <img key={index} src={photo} alt={`촬영 사진 ${index + 1}`} style={{ width: "100%", borderRadius: 8 }} />
+
+        <div className="booth-thumbnails">
+          {Array.from({ length: PHOTO_COUNT }, (_, index) => (
+            <div className="booth-thumbnail" key={index}>
+              {photos[index] ? (
+                <img
+                  src={photos[index]}
+                  alt={`촬영 사진 ${index + 1}`}
+                />
+              ) : (
+                <span>{index + 1}</span>
+              )}
+            </div>
           ))}
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
