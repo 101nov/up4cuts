@@ -1,0 +1,56 @@
+.qr-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.qr-modal {
+  width: 100%;
+  max-width: 380px;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+}
+
+.qr-modal h2 {
+  margin: 0 0 10px;
+  font-size: 24px;
+  color: #222;
+}
+
+.qr-modal p {
+  margin: 8px 0;
+  color: #666;
+  font-size: 15px;
+}
+
+.qr-code {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.qr-expiry {
+  font-size: 13px !important;
+  color: #999 !important;
+}
+
+.qr-close {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 14px;
+  background: #e65b79;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
