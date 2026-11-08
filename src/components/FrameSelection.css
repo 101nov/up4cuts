@@ -247,4 +247,21 @@
     min-height: 46px;
     font-size: 14px;
   }
+  .frame-share {
+  width: 100%;
+  max-width: 360px;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: #222;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.frame-share:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 }

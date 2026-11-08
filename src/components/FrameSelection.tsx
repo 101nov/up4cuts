@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./FrameSelection.css";
-
 import { composePhotoFrame } from "../utils/composePhoto";
+import QRCodeModal from "./QRCodeModal";
+import { uploadPhoto } from "../utils/uploadPhoto";
 
 export type FrameType =
   | "white"
@@ -51,6 +52,9 @@ export default function FrameSelection({
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [qrError, setQrError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -88,7 +92,28 @@ export default function FrameSelection({
       cancelled = true;
     };
   }, [photos, selectedFrame]);
+async function handleShareQR() {
+  if (!preview || loading || uploading) return;
 
+  const pin = window.prompt("Enter upload PIN");
+
+  if (!pin) return;
+
+  setUploading(true);
+  setQrError("");
+
+  try {
+    const url = await uploadPhoto(preview, pin);
+    setQrUrl(url);
+  } catch (err) {
+    console.error(err);
+    setQrError(
+      "Unable to upload. Check your internet connection or PIN."
+    );
+  } finally {
+    setUploading(false);
+  }
+}
   return (
     <main className="frame-selection">
 
@@ -131,7 +156,11 @@ export default function FrameSelection({
                   ? "selected"
                   : ""
               }`}
-              onClick={() => setSelectedFrame(frame.id)}
+              onClick={() => {
+                setSelectedFrame(frame.id);
+                setQrUrl(null);
+                setQrError("");
+              }}              
               aria-pressed={selectedFrame === frame.id}
             >
               <img
@@ -171,6 +200,27 @@ export default function FrameSelection({
           💾 Save Photo
         </a>
       </div>
+      <button
+        type="button"
+        className="frame-share"
+        onClick={handleShareQR}
+        disabled={!preview || loading || uploading}
+      >
+        {uploading ? "Uploading..." : "🔗 Share QR"}
+      </button>
+
+      {qrError && (
+        <p className="frame-error" role="alert">
+          {qrError}
+        </p>
+      )}
+
+      {qrUrl && (
+        <QRCodeModal
+          url={qrUrl}
+          onClose={() => setQrUrl(null)}
+        />
+      )}
     </main>
   );
 }
