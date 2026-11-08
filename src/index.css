@@ -2,15 +2,19 @@
   box-sizing: border-box;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #222;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #ffffff;
 }
 
+body {
+  min-width: 320px;
+}
 main {
   min-height: 100vh;
   display: flex;
