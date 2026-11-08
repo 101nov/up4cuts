@@ -94,7 +94,7 @@
   margin: 0;
 }
 
-.frame-options h3{
+.frame-options h3 {
   color: #414144;
 }
 
@@ -157,10 +157,11 @@
 }
 
 /* 하단 버튼 */
+
 .frame-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 
   width: 100%;
   flex-shrink: 0;
@@ -169,27 +170,33 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* 버튼 공통 스타일 */
+
 .frame-retake,
-.frame-save {
+.frame-save,
+.frame-share {
   box-sizing: border-box;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  flex: 1;
-  max-width: 300px;
+  min-width: 0;
   min-height: 50px;
-  padding: 12px 16px;
+  padding: 12px 6px;
 
   border: none;
   border-radius: 14px;
 
-  font-size: 15px;
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.2px;
 
+  text-align: center;
   text-decoration: none;
+  white-space: nowrap;
+
   cursor: pointer;
 
   transition:
@@ -197,23 +204,40 @@
     transform 0.2s ease;
 }
 
+/* Retake 버튼 */
+
 .frame-retake {
   background: #e9e9eb;
   color: #1d1d1f;
 }
+
+/* Save Photo 버튼 */
 
 .frame-save {
   background: #8c1d40;
   color: #ffffff;
 }
 
-.frame-save.disabled {
+/* Share QR 버튼 */
+
+.frame-share {
+  background: #222222;
+  color: #ffffff;
+}
+
+/* 비활성화 상태 */
+
+.frame-save.disabled,
+.frame-share:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* 버튼 클릭 효과 */
+
 .frame-retake:active,
-.frame-save:active {
+.frame-save:active,
+.frame-share:active {
   transform: scale(0.98);
 }
 
@@ -243,25 +267,10 @@
   }
 
   .frame-retake,
-  .frame-save {
-    min-height: 46px;
-    font-size: 14px;
-  }
+  .frame-save,
   .frame-share {
-  width: 100%;
-  max-width: 360px;
-  min-height: 48px;
-  border: none;
-  border-radius: 14px;
-  background: #222;
-  color: #fff;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.frame-share:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+    min-height: 46px;
+    padding: 10px 4px;
+    font-size: 13px;
+  }
 }
