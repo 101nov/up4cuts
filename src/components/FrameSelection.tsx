@@ -4,6 +4,8 @@ import { composePhotoFrame } from "../utils/composePhoto";
 import QRCodeModal from "./QRCodeModal";
 import { uploadPhoto } from "../utils/uploadPhoto";
 
+let operatorPin = "";
+
 export type FrameType =
   | "white"
   | "black"
@@ -92,24 +94,33 @@ export default function FrameSelection({
       cancelled = true;
     };
   }, [photos, selectedFrame]);
+
 async function handleShareQR() {
   if (!preview || loading || uploading) return;
 
-  const pin = window.prompt("Enter upload PIN");
+  if (!operatorPin) {
+    const input = window.prompt("Enter operator PIN");
 
-  if (!pin) return;
+    if (!input) return;
+
+    operatorPin = input;
+  }
 
   setUploading(true);
   setQrError("");
 
   try {
-    const url = await uploadPhoto(preview, pin);
+    const url = await uploadPhoto(preview, operatorPin);
     setQrUrl(url);
   } catch (err) {
     console.error(err);
+
     setQrError(
       "Unable to upload. Check your internet connection or PIN."
     );
+
+    // PIN이 잘못되었을 가능성이 있으므로 초기화
+    operatorPin = "";
   } finally {
     setUploading(false);
   }
@@ -176,30 +187,30 @@ async function handleShareQR() {
 
       {/* 하단 버튼 */}
       <div className="frame-actions">
-        <button
-          type="button"
-          className="frame-retake"
-          onClick={onRetake}
-        >
-          📷 Retake
-        </button>
+      <button
+        type="button"
+        className="frame-retake"
+        onClick={onRetake}
+      >
+        📷 Retake
+      </button>
 
-        <a
-          href={preview ?? undefined}
-          download="UP네컷.jpg"
-          className={`frame-save ${
-            !preview || loading ? "disabled" : ""
-          }`}
-          aria-disabled={!preview || loading}
-          onClick={(event) => {
-            if (!preview || loading) {
-              event.preventDefault();
-            }
-          }}
-        >
-          💾 Save Photo
-        </a>
-      </div>
+      <a
+        href={preview ?? undefined}
+        download="UP네컷.jpg"
+        className={`frame-save ${
+          !preview || loading ? "disabled" : ""
+        }`}
+        aria-disabled={!preview || loading}
+        onClick={(event) => {
+          if (!preview || loading) {
+            event.preventDefault();
+          }
+        }}
+      >
+        💾 Save
+      </a>
+
       <button
         type="button"
         className="frame-share"
@@ -208,6 +219,7 @@ async function handleShareQR() {
       >
         {uploading ? "Uploading..." : "🔗 Share QR"}
       </button>
+    </div>
 
       {qrError && (
         <p className="frame-error" role="alert">
